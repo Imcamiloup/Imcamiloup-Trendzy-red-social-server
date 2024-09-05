@@ -2,11 +2,13 @@ import express from "express";
 import router from "./routes/index";
 import swaggerUi from "swagger-ui-express";
 import swaggerSetup from "./docs/swagger";
+import morgan from 'morgan';
 
 // const { FRONT_END_URL } = process.env;
 
 const server = express();
 
+server.use(morgan('dev'));
 server.use(express.json()); //middleware post
 server.use(express.urlencoded({ extended: true }));
 server.use('/api',router);

@@ -1,5 +1,6 @@
 import swaggerJSDoc, { OAS3Definition, OAS3Options } from "swagger-jsdoc";
 import dotenv from "dotenv";
+import {userDocs} from "./userDocs";
 
 dotenv.config()
 const { SERVER_URL } = process.env;
@@ -18,11 +19,15 @@ const swaggerDefinition: OAS3Definition = {
       description: "Development server",
     },
   ],
+  paths: {
+    ...userDocs
+},
   components: {
     securitySchemes: {
       bearerAuth: {
         type: "http",
         scheme: "bearer",
+        format: "JWT",
       },
     },
     schemas: {

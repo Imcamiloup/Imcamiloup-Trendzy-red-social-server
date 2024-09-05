@@ -1,30 +1,29 @@
 import { Request, Response } from 'express';
-import { registerController , getAllUsersController } from "../controllers/userController";
+import { IUserController } from '../interfaces/IUserController';
 
-export const registerHandler = async (req: Request, res: Response) => {
-    try {
-        const { email, password, name, role, isActive } = req.body;
-        const { verificationToken, newUser } = await registerController({ email, password, name, role, isActive });
-        res.status(201).json({ verificationToken, newUser });
-    } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            res.status(400).json({ error: 'Unknown error occurred' });
-        }
-    }
-};
+export class UserHandler {
+    private userController: IUserController;
 
-export const getAllUsersHandler = async (_req: Request, res: Response) => {
-    try{
-        const users = await getAllUsersController();
-        res.status(200).json(users);
+    constructor(userController: IUserController) {
+        this.userController = userController;
     }
-    catch(error){
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-        } else {
-            res.status(400).json({ error: 'Unknown error occurred' });
+
+    public registerHandler = async (req: Request, res: Response) => {
+        try {
+            const { email, password, name, role, isActive } = req.body;
+            const { verificationToken, newUser } = await this.userController.register({ email, password, name, role, isActive });
+            res.status(201).json({ verificationToken, newUser });
+        } catch (error) {
+            res.status(400).json({ message: error instanceof Error ? error.message : 'Unknown error occurred' });
         }
-    }
+    };
+
+    public getAllUsersHandler = async (_req: Request, res: Response) => {
+        try {
+            const users = await this.userController.getAllUsers();
+            res.status(200).json(users);
+        } catch (error) {
+            res.status(500).json({ message: 'Error fetching users' });
+        }
+    };
 }
