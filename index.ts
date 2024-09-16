@@ -2,12 +2,11 @@ import dotenv from "dotenv";
 import server from "./src/server";
 import sequelize from "./src/config/database";
 
-
 dotenv.config();
 const { PORT } = process.env;
 
 sequelize
-  .sync({ force: false })
+  .sync({ force: true })
   .then(() => {
     server.listen(PORT, () => {
       console.log(`Server is running at http://localhost:${PORT}`);
@@ -17,9 +16,6 @@ sequelize
   .catch((err) => {
     console.error("Unable to connect to the database:", err);
   });
-
-
-
 
 /* server.get("/ping", (_req, res) => {
   console.log("someone pinged here");
