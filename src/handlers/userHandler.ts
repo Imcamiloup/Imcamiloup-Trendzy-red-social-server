@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { IUserController } from "../interfaces/IUserController";
+import sendEmail from "../utils/sendEmail";
 
 export class UserHandler {
   private userController: IUserController;
@@ -14,14 +15,13 @@ export class UserHandler {
       const { verificationToken, newUser } = await this.userController.register(
         { email, password, name, role, isActive }
       );
+      await sendEmail(email, verificationToken);
       res.status(201).json({ verificationToken, newUser });
     } catch (error) {
-      res
-        .status(400)
-        .json({
-          message:
-            error instanceof Error ? error.message : "Unknown error occurred",
-        });
+      res.status(400).json({
+        message:
+          error instanceof Error ? error.message : "Unknown error occurred",
+      });
     }
   };
 
@@ -41,14 +41,13 @@ export class UserHandler {
         email,
         password,
       });
+      console.log("token", token);
       res.status(200).json({ token, user });
     } catch (error) {
-      res
-        .status(400)
-        .json({
-          message:
-            error instanceof Error ? error.message : "Unknown error occurred",
-        });
+      res.status(400).json({
+        message:
+          error instanceof Error ? error.message : "Unknown error occurred",
+      });
     }
   };
 }

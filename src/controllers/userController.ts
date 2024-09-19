@@ -52,6 +52,7 @@ export const userController: IUserController = {
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
+      console.error("User not found");
       throw new Error("User not found");
     }
 
@@ -61,6 +62,7 @@ export const userController: IUserController = {
     );
 
     if (!passwordMatch) {
+      console.error("Invalid password");
       throw new Error("Invalid password");
     }
 
